@@ -66,7 +66,7 @@
             </form>
 
             <div>
-                <p class="text-[0.9rem] mt-[2rem]">Don't found your account? <a href="/" class="text-blue-600 underline underline-offset-0">Contact administrator</a></p>
+                <p class="text-[0.9rem] mt-[2rem]">Don't found your account? <button class="text-blue-500 underline" on:click={() => {alert("It is impossible. If you are really a lab's member, you name should be on the list. Otherwise, you are not a lab's member for sure !")}}>Contact administrator</button></p>
             </div>
         </div>  
     </div>
