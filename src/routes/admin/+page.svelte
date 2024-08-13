@@ -6,9 +6,49 @@
     let errorMessage = '';
     let sessionSecret = '';
 
+    interface Criteria {
+        id: string;
+        name: string;
+    }
+
+    interface JuniorScore {
+        id: string;
+        student_id: string;
+        name: string;
+        nickname: string;
+        academic_year: string;
+        score: any[];
+        total_avg_score: number;
+    }
+
+    let all_criteria: Criteria[] = [];
+    let juniors: JuniorScore[] = [];
+
     // Check if the user is already authenticated when the component is mounted
     onMount(() => {
         sessionSecret = sessionStorage.getItem('sessionSecret') || '';
+
+        // Fetch all criteria
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/criteriaType`)
+            .then(response => response.json())
+            .then(data => {
+                all_criteria = data.items;
+            })
+            .catch(error => {
+                console.error('Error fetching criteria:', error);
+            });
+
+        // Fetch all juniors
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/junior/score`)
+            .then(response => response.json())
+            .then(data => {
+                juniors = data.items;
+                console.log(juniors[0].score);
+            })
+            .catch(error => {
+                console.error('Error fetching juniors:', error);
+            });
+
     });
 
     const checkPassword = () => {
@@ -113,6 +153,40 @@
             </button>
         </a>
     </div>
+
+    <div class="flex overflow-x-auto w-full justify-center mt-[1rem]">
+        <table class="table w-[90%]">
+          <!-- head -->
+          <thead>
+            <tr>
+              <td>#</td>
+              <td>Student ID</td>
+              <td>Name</td>
+              <td>Nickname</td>
+              <td class="text-center">Year</td>
+                {#each all_criteria as criteria}
+                    <td class="text-center">{criteria.name}</td>
+                {/each}
+               <td class="text-center text-green-500 font-bold">Average</td>
+            </tr>
+          </thead>
+          <tbody>
+            {#each juniors as junior, i}
+                <tr class="hover:bg-base-300 hover:cursor-pointer" on:click={() => window.location.href = `/admin/juniors/${junior.student_id}`}>
+                    <td>{i + 1}</td>
+                    <td>{junior.student_id}</td>
+                    <td>{junior.name}</td>
+                    <td>{junior.nickname}</td>
+                    <td class="text-center">{junior.academic_year}</td>
+                    {#each Object.values(junior.score) as score}
+                        <td class="text-center">{score}</td>
+                    {/each}
+                    <td class="text-center text-green-500">{junior.total_avg_score}</td>
+                </tr>
+            {/each}
+
+          </tbody>
+        </table>
 
     
 </body>
