@@ -1,6 +1,8 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
     import { getCookie } from '../../../utils/cookie';
+
+    let isSaved = true;
 
   interface ScoreRecord {
     id: string;
@@ -45,6 +47,14 @@
             .catch(error => {
                 console.error('Error fetching all criterias:', error);
             });
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('popstate', handlePopState);
+    });
+
+    onDestroy(() => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        window.removeEventListener('popstate', handlePopState);
     });
 
     const handleLogout = async () => {
@@ -83,7 +93,39 @@
           })
         });
 
+        isSaved = true;
         document.location.reload();
+    }
+
+    const handleChange = () => {
+        isSaved = false;
+    }
+
+    const handleBackToHome = () => {
+        if (isSaved) {
+            window.location.href = '/home';
+        } else {
+            if (confirm('You have unsaved changes. Are you sure you want to leave?')) {
+                window.location.href = '/home';
+            }
+        }
+    }
+
+    const handleBeforeUnload = (event) => {
+        if (!isSaved) {
+            event.preventDefault();
+            event.returnValue = '';
+        }
+    }
+
+    const handlePopState = (event: PopStateEvent) => {
+        if (!isSaved) {
+            const confirmation = confirm('You have unsaved changes. Are you sure you want to leave?');
+            if (!confirmation) {
+                // Push the current state back to cancel the navigation
+                history.pushState(null, document.title, window.location.href);
+            }
+        }
     }
 
 </script>
@@ -97,7 +139,7 @@
 <body class="flex flex-col w-full h-full">
     <div class="navbar bg-base-300 flex-wrap">
         <div class="flex-1">
-          <a class="btn btn-ghost text-xl" href="/home">NaCl - Interview Exam Scoring System</a>
+          <button class="btn btn-ghost text-xl" on:click={handleBackToHome}>NaCl - Interview Exam Scoring System</button>
         </div>
         <div class="flex-none">
             <p class="mr-[1rem]">
@@ -106,15 +148,6 @@
             <button class="btn btn-outline btn-error" on:click={handleLogout}>Logout</button>
         </div>
       </div>
-
-      <!-- <div class="flex justify-center w-full h-[20vh] mb-[2rem]">
-        <div class="flex flex-around justify-center items-center mt-[2rem] w-[90%] h-full bg-base-300 rounded-lg items-center">
-          <div class="w-full text-center">{juniorNickname}</div>
-          <div class="w-full text-center">{juniorName}</div>
-          <div class="w-full text-center">{juniorAcademicYear}</div>
-        </div>
-      </div> -->
-
 
     <div class="overflow-x-auto flex justify-center">
       <table class="table flex mt-[2rem] w-[90vw]">
@@ -137,12 +170,12 @@
                 {#if juniorScore.length > 0}
                   {#each juniorScore as score}
                     {#if score.criteria_id === criteria.id}
-                      <select class="select w-[20%] mr-[1rem]">
+                      <select class="select w-[20%] mr-[1rem]" on:change={handleChange}>
                         {#each [1,2,3,4,5,6,7,8,9,10] as scoreChoice}
-                          <option value={scoreChoice} selected={scoreChoice === score.score}>{scoreChoice}</option>
+                          <option value={scoreChoice} selected={scoreChoice === score.score} on:change={handleChange}>{scoreChoice}</option>
                         {/each}
                       </select>
-                      <input type="text" placeholder="Comment..." class="input input-bordered w-full" value="{score.comment}" />
+                      <input type="text" placeholder="Comment..." class="input input-bordered w-full" value="{score.comment}" on:change={handleChange} />
                     {/if}
                   {/each}
                 {:else}
