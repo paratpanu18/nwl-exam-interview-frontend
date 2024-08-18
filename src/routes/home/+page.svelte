@@ -107,7 +107,7 @@
                         <td class="truncate text-center">{score.score}</td>
                     {/each}
                     <td class="text-center">
-                    <a href="/score/{junior.id}" class="btn btn-sm btn-outline btn-success">Add score</a>
+                        <a href="/score/{junior.id}" class="btn btn-sm btn-outline btn-success">Add score</a>
                     </td>
                 </tr>
             {/each}
