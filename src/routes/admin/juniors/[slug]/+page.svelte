@@ -76,15 +76,15 @@
             </div>
             <div class="w-[30%] flex flex-col items-center justify-center">
                 <p>Average Score</p>
-                <p class="font-bold text-[2rem]">{juniorData.total_avg_score ?? ""}</p>
+                <p class="font-bold text-[2rem]">{juniorData.total_avg_score ? juniorData.total_avg_score.toFixed(2) : ""}</p>
             </div>
         </div>
     </div>
 
     <div>
-        {#each all_criteria as criteria}
+        <!-- {#each all_criteria as criteria}
 
-        {/each}
+        {/each} -->
     </div>
 
 

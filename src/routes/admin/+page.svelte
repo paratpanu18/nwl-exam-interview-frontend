@@ -181,7 +181,7 @@
                     {#each Object.values(junior.score) as score}
                         <td class="text-center">{score}</td>
                     {/each}
-                    <td class="text-center text-green-500">{junior.total_avg_score}</td>
+                    <td class="text-center text-green-500">{junior.total_avg_score ? junior.total_avg_score.toFixed(2) : ""}</td>
                 </tr>
             {/each}
 
