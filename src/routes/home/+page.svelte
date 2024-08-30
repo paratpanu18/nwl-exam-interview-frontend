@@ -97,7 +97,7 @@
           </thead>
           <tbody>
             {#each juniors as junior, i}
-                <tr>
+                <tr class="hover:bg-base-300 cursor-pointer" on:click={() => window.location.href=`/score/${junior.id}`}>
                     <td>{i + 1}</td>
                     <td class="truncate text-left">{junior.name}</td>
                     <td class="truncate text-left">{junior.nickname}</td>
