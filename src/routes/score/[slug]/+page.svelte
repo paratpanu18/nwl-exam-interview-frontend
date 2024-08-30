@@ -26,6 +26,12 @@
     student_id?: string;
   }
 
+  interface ScoreEntry {
+    criteria_id: string;
+    score: number;
+    comment: string;
+  }
+
 
 	export let data: any;
     const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -108,25 +114,33 @@
             return;
         }
 
+        let score_set: ScoreEntry[] = []
+
         scores.forEach((score, i) => {
-          let req_body = {
-            junior_id: juniorId,
-            senior_id: seniorId,
+          let scoreEntry: ScoreEntry = {
             criteria_id: all_criteria[i].id,
             score: score.value,
             comment: comments[i].value
           }
 
-          let method = juniorScore.length > 0 ? 'PUT' : 'POST';
+          score_set.push(scoreEntry);
+        });
 
-          fetch(`${BASE_URL}/score`, {
+        const requestBody = {
+            "senior_id": seniorId,
+            "junior_id": juniorId,
+            "score_set": score_set
+        }
+
+        const method = juniorScore.length > 0 ? 'PUT' : 'POST';
+        const endPoint = method === 'POST' ? '/many_score' : '/many_scores';
+        await fetch (`${BASE_URL}${endPoint}`, {
             method: method,
             headers: {
-              'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(req_body)
-          })
-        });
+            body: JSON.stringify(requestBody)
+        }) 
 
         isSaved = true;
         document.location.reload();
@@ -211,7 +225,7 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto flex justify-center">
+    <div class="overflow-x-auto flex justify-center items-center">
       <table class="table flex mt-[2rem] w-[90vw]">
         <!-- head -->
         <thead>
@@ -259,6 +273,64 @@
 
     <div class="flex justify-center mt-[2rem] w-[100vw]">
       <button class="btn btn-success btn-outline w-[90%]" on:click={handleSave}>Save</button>
+    </div>
+
+    <div class="w-full flex flex-col justify-center items-center mt-[3rem]">
+      <h1 class="text-2xl font-bold underline">Question List</h1>
+
+      <div class="collapse collapse-plus bg-base-200 w-[90%] mt-[1rem]">
+        <input type="radio" name="my-accordion-3" checked="checked" />
+        <div class="collapse-title text-2xl font-bold">General Question / คำถามทั่วไป</div>
+        <div class="collapse-content text-l">
+          <li>แนะนำตัวให้พี่ ๆ จำเราได้</li>
+          <li>ข้อดี ข้อเสีย ของตัวน้องเอง</li>
+          <li>ทำไมถึงอยากเข้าแลป</li>
+          <li>น้องคาดหวังอะไรกับแลปนี้ ? </li>
+          <li>รู้จักพี่ ๆ ในแลปคนไหนบ้าง </li>
+          <li>มีเพื่อนมาสัมด้วยไหม ใครบ้าง **(คสพ. น้อง) </li>
+          <li>ถ้าน้องติด แต่เพื่อนน้องไม่ติดแล้วน้อง จะยังมาแลปไหม *  </li>
+          <li>น้องสามารถทำอะไรให้กับแลปได้บ้าง (หา Graphic)</li>
+          <li>นอกจากสายงานด้าน network ถ้าพี่ให้เลือก UI/UX, Front, Back ชอบอะไร</li>
+          <li>ในเเก๊งเพื่อนน้องคิดว่าใครควรติดมากที่สุด</li>
+          <li>น้องมีวิชาในหลักสูตรหรือหัวข้อที่สนใจเป็นพิเศษไหม </li>
+        </div>
+      </div>
+      
+      <div class="collapse collapse-plus bg-base-200 w-[90%] mt-[1rem]">
+        <input type="radio" name="my-accordion-3" />
+        <div class="collapse-title text-2xl font-bold">Selected Research / หัวข้อที่ค้นคว้ามา</div>
+        <div class="collapse-content text-l">
+          <li>TCP/IP =  อธิบายการทำงานของ Dns ให้ละเอียดที่สุด </li>
+          <li>VM vs Container = Situation + เลือก Vm หรือ container </li>
+          <li>Cloud Technology = อธิบาย cloud technology ตามที่น้องไป research มา</li>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-200 w-[90%] mt-[1rem]">
+        <input type="radio" name="my-accordion-3" />
+        <div class="collapse-title text-2xl font-bold">Lab Test / สอบภาคปฏิบัติ</div>
+        <div class="collapse-content text-l">
+          <li>ปี1 = เป็น instruction ssh เเล้วให้น้อง cat file ออกมาให้ดู</li>
+          <li>ปี2 = เป็น instruction(ssh username@host -p xxx | ให้เเสดงผลไฟล์เเล้วบอกว่ามันทำอะไรมี permission denied) อันยากของโอ๊ค</li>
+          <li>ปี3 = build + run docker</li>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-200 w-[90%] mt-[1rem]">
+        <input type="radio" name="my-accordion-3" />
+        <div class="collapse-title text-2xl font-bold">UwU</div>
+        <div class="collapse-content text-l">
+          <li>น้องจะบริจาคเงินให้แลปได้เท่าไหร่ ( บอกน้องด้วยว่าไม่มีผลต่อคะแนน)</li>
+          <li>งานอดิเรกของน้องคืออะไร</li>
+          <li>อยู่หอ หรือ อยู่บ้าน</li>
+          <li>น้องได้สมัครแลปอื่นไว้ไหม ? ถ้าให้เลือกนับหัวจะเลือกแลปอะไร & มีเพื่อนจากเเลปนั้นมาด้วยบ่ </li>
+          <li>จะมานั่งที่แลปบ่อยมั้ย กี่วันจาก 7 วัน</li>
+          <li>ถ้าพวกพี่ ๆ เสียงดัง เวลา เล่นเกมดัง น้อง ok บ่ + น้องจะทำยังไง ?</li>
+          <li>น้องมีอะไรจะถามพวกพี่มั้ย ? ถามหน่อย </li>
+          <li>ต้องบอกน้องด้วยว่าเป็นความลับตลอดไปรู้กันแค่ในห้องสัม</li>
+        </div>
+      </div>
+
     </div>
 
     {#if isSavedAlertOpen}

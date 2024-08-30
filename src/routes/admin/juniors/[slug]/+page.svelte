@@ -15,7 +15,7 @@ import { onMount } from 'svelte';
                 juniorData = data;
                 criterias = data.criteria;
                 criteriasKeys = Object.keys(criterias);
-                console.log(criterias);
+                console.log(criterias["Kawaiiness"]["comments"]);
             })
             .catch(error => {
                 console.error('Error fetching junior score:', error);
@@ -81,13 +81,13 @@ import { onMount } from 'svelte';
                             <p>{index+1}. {key}</p>
                         </div>
                         <div class="text-2xl font-bold">
-                            <p>{criterias[key]["avg_score"] ? criterias[key]["avg_score"].toFixed(2) : "0.0"}</p>
+                            <p>{criterias[key]["avg_score"] != "-" ? criterias[key]["avg_score"].toFixed(2) : "0.0"}</p>
                         </div>
                     </div>
                     <hr class="block border-white my-[2rem]">
     
                     <div class="flex flex-row flex-wrap justify-start gap-x-[1rem] gap-y-[2rem]">
-                    {#if criterias[key]["comments"]}
+                    {#if Object.entries(criterias[key]["comments"]).length > 0}
                         {#each Object.entries(criterias[key]["comments"]) as [user, comment]}
                             <div class="card bg-base-200 w-[30%] shadow-xl">
                                 <div class="card-body">
