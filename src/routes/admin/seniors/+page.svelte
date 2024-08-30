@@ -33,7 +33,6 @@
             }
             const data = await response.json();
             seniors = data.items;
-            console.log(seniors);
         } catch (error) {
             console.error('Error fetching seniors:', error);
         }

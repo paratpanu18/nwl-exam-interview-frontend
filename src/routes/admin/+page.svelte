@@ -43,7 +43,6 @@
             .then(response => response.json())
             .then(data => {
                 juniors = data.items;
-                console.log(juniors[0].score);
             })
             .catch(error => {
                 console.error('Error fetching juniors:', error);
