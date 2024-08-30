@@ -15,7 +15,6 @@ import { onMount } from 'svelte';
                 juniorData = data;
                 criterias = data.criteria;
                 criteriasKeys = Object.keys(criterias);
-                console.log(criterias["Kawaiiness"]["comments"]);
             })
             .catch(error => {
                 console.error('Error fetching junior score:', error);

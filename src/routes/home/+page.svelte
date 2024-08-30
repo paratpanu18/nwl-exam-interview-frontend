@@ -45,7 +45,6 @@
             .then(response => response.json())
             .then(data => {
                 juniors = data.juniors;
-                console.log(juniors);
             })
             .catch(error => {
                 console.error('Error fetching juniors:', error);
